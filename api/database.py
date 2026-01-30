@@ -180,4 +180,22 @@ class Database:
             session.refresh(record)
             return record
 
+    def get_deployments_by_customer(
+        self,
+        customer_name: str,
+    ) -> list[CustomerDeploymentRecord]:
+        """Get all deployments for a customer.
+
+        Args:
+            customer_name: Customer identifier
+
+        Returns:
+            List of deployment records for the customer
+        """
+        with self.get_session() as session:
+            return list(
+                session.query(CustomerDeploymentRecord).filter_by(customer_name=customer_name).all()
+            )
+
+
 db = Database()

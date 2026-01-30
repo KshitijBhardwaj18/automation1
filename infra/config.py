@@ -1,6 +1,9 @@
 """Customer configuration schema and loader."""
+
 from dataclasses import dataclass
+
 import pulumi
+
 from api.models import NodeGroupConfig
 
 
@@ -18,7 +21,7 @@ class CustomerConfig:
 
     eks_version: str
     eks_mode: str  # "auto" or "managed"
-    node_group_config: NodeGroupConfig | None 
+    node_group_config: NodeGroupConfig | None
 
 
 def load_customer_config() -> CustomerConfig:
@@ -47,18 +50,14 @@ def load_customer_config() -> CustomerConfig:
             capacity_type=config.get("nodeCapacityType") or "ON_DEMAND",
         )
 
-
     return CustomerConfig(
         customer_name=config.require("customerName"),
         environment=config.get("environment") or "prod",
-
         customer_role_arn=config.require("customerRoleArn"),
         external_id=config.require_secret("externalId"),
         aws_region=config.get("awsRegion") or "us-east-1",
-       
         vpc_cidr=config.get("vpcCidr") or "10.0.0.0/16",
         availability_zones=availability_zones,
-
         eks_version=config.get("eksVersion") or "1.31",
         eks_mode=eks_mode,
         node_group_config=node_group_config,

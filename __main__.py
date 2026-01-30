@@ -1,11 +1,10 @@
 import pulumi
 
-from infra.components.networking import Networking
-from infra.components.iam import EksIamRoles
 from infra.components.eks import EksCluster
+from infra.components.iam import EksIamRoles
+from infra.components.networking import Networking
 from infra.config import load_customer_config
 from infra.providers import create_customer_aws_provider
-
 
 config = load_customer_config()
 

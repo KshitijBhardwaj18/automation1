@@ -27,7 +27,6 @@ class Networking(pulumi.ComponentResource):
 
         child_opts = pulumi.ResourceOptions(parent=self, provider=provider)
 
-        
         self.vpc = awsx.ec2.Vpc(
             f"{name}-vpc",
             cidr_block=vpc_cidr,
@@ -36,7 +35,6 @@ class Networking(pulumi.ComponentResource):
                 strategy=awsx.ec2.NatGatewayStrategy.ONE_PER_AZ,
             ),
             subnet_specs=[
-                
                 awsx.ec2.SubnetSpecArgs(
                     type=awsx.ec2.SubnetType.PUBLIC,
                     cidr_mask=24,
@@ -45,7 +43,6 @@ class Networking(pulumi.ComponentResource):
                         "karpenter.sh/discovery": name,
                     },
                 ),
-                
                 awsx.ec2.SubnetSpecArgs(
                     type=awsx.ec2.SubnetType.PRIVATE,
                     cidr_mask=20,
@@ -61,7 +58,6 @@ class Networking(pulumi.ComponentResource):
             opts=child_opts,
         )
 
-     
         self.vpc_id = self.vpc.vpc_id
         self.private_subnet_ids = self.vpc.private_subnet_ids
         self.public_subnet_ids = self.vpc.public_subnet_ids

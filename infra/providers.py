@@ -1,8 +1,8 @@
 import pulumi
 import pulumi_aws as aws
-import pulumi_kubernetes as k8s
 
 from infra.config import CustomerConfig
+
 
 def create_customer_aws_provider(config: CustomerConfig) -> aws.Provider:
     """Create AWS provider that assumes role in customer's AWS account."""

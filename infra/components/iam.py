@@ -17,14 +17,18 @@ class EksIamRoles(pulumi.ComponentResource):
 
         child_opts = pulumi.ResourceOptions(parent=self, provider=provider)
 
-        eks_assume_role_policy = json.dumps({
-            "Version": "2012-10-17",
-            "Statement": [{
-                "Effect": "Allow",
-                "Principal": {"Service": "eks.amazonaws.com"},
-                "Action": "sts:AssumeRole"
-            }]
-        })
+        eks_assume_role_policy = json.dumps(
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {"Service": "eks.amazonaws.com"},
+                        "Action": "sts:AssumeRole",
+                    }
+                ],
+            }
+        )
 
         self.cluster_role = aws.iam.Role(
             f"{name}-eks-cluster-role",
@@ -46,14 +50,18 @@ class EksIamRoles(pulumi.ComponentResource):
             opts=child_opts,
         )
 
-        ec2_assume_role_policy = json.dumps({
-            "Version": "2012-10-17",
-            "Statement": [{
-                "Effect": "Allow",
-                "Principal": {"Service": "ec2.amazonaws.com"},
-                "Action": "sts:AssumeRole"
-            }]
-        })
+        ec2_assume_role_policy = json.dumps(
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {"Service": "ec2.amazonaws.com"},
+                        "Action": "sts:AssumeRole",
+                    }
+                ],
+            }
+        )
 
         self.node_role = aws.iam.Role(
             f"{name}-eks-node-role",
@@ -86,8 +94,10 @@ class EksIamRoles(pulumi.ComponentResource):
         self.node_role_arn = self.node_role.arn
         self.node_instance_profile_arn = self.node_instance_profile.arn
 
-        self.register_outputs({
-            "cluster_role_arn": self.cluster_role_arn,
-            "node_role_arn": self.node_role_arn,
-            "node_instance_profile_arn": self.node_instance_profile_arn,
-        })
+        self.register_outputs(
+            {
+                "cluster_role_arn": self.cluster_role_arn,
+                "node_role_arn": self.node_role_arn,
+                "node_instance_profile_arn": self.node_instance_profile_arn,
+            }
+        )

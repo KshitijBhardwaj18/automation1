@@ -1,3 +1,5 @@
+from typing import Sequence
+
 import pulumi
 import pulumi_aws as aws
 
@@ -16,7 +18,7 @@ class EksCluster(pulumi.ComponentResource):
         self,
         name: str,
         vpc_id: pulumi.Output[str],
-        private_subnet_ids: pulumi.Output[list[str]],
+        private_subnet_ids: pulumi.Output[Sequence[str]],
         cluster_role_arn: pulumi.Output[str],
         node_role_arn: pulumi.Output[str],
         eks_version: str,
@@ -29,7 +31,6 @@ class EksCluster(pulumi.ComponentResource):
 
         child_opts = pulumi.ResourceOptions(parent=self, provider=provider)
 
-       
         self.cluster_sg = aws.ec2.SecurityGroup(
             f"{name}-eks-cluster-sg",
             vpc_id=vpc_id,
@@ -59,8 +60,8 @@ class EksCluster(pulumi.ComponentResource):
             "vpc_config": aws.eks.ClusterVpcConfigArgs(
                 subnet_ids=private_subnet_ids,
                 security_group_ids=[self.cluster_sg.id],
-                endpoint_private_access=True, 
-                endpoint_public_access=False,   
+                endpoint_private_access=True,
+                endpoint_public_access=False,
             ),
         }
 
@@ -86,11 +87,7 @@ class EksCluster(pulumi.ComponentResource):
             opts=child_opts,
         )
 
-       
-
-
         if eks_mode == "managed" and node_group_config:
-
             self.node_group = aws.eks.NodeGroup(
                 f"{name}-eks-node-group",
                 cluster_name=self.cluster.name,
@@ -117,9 +114,11 @@ class EksCluster(pulumi.ComponentResource):
         self.cluster_arn = self.cluster.arn
         self.cluster_security_group_id = self.cluster_sg.id
 
-        self.register_outputs({
-            "cluster_name": self.cluster_name,
-            "cluster_endpoint": self.cluster_endpoint,
-            "cluster_arn": self.cluster_arn,
-            "eks_mode": eks_mode,
-        })
+        self.register_outputs(
+            {
+                "cluster_name": self.cluster_name,
+                "cluster_endpoint": self.cluster_endpoint,
+                "cluster_arn": self.cluster_arn,
+                "eks_mode": eks_mode,
+            }
+        )

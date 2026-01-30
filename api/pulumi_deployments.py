@@ -1,14 +1,17 @@
 """Pulumi Deployments API client for triggering deployments."""
 
 from typing import Any
+
 import httpx
-from api.models import CustomerOnboardRequest
-from api.models import EksMode
+
+from api.models import CustomerOnboardRequest, EksMode
 
 PULUMI_API_BASE = "https://api.pulumi.com"
 
+
 class PulumiDeploymentsClient:
     """Client for interacting with Pulumi Deployments API."""
+
     def __init__(
         self,
         organization: str,
@@ -112,23 +115,27 @@ class PulumiDeploymentsClient:
             ng = request.node_group_config
             if ng:
                 instance_types_str = ",".join(ng.instance_types)
-                pre_run_commands.extend([
-                    f"pulumi config set --stack {stack_id} nodeInstanceTypes {instance_types_str}",
-                    f"pulumi config set --stack {stack_id} nodeDesiredSize {ng.desired_size}",
-                    f"pulumi config set --stack {stack_id} nodeMinSize {ng.min_size}",
-                    f"pulumi config set --stack {stack_id} nodeMaxSize {ng.max_size}",
-                    f"pulumi config set --stack {stack_id} nodeDiskSize {ng.disk_size}",
-                    f"pulumi config set --stack {stack_id} nodeCapacityType {ng.capacity_type}",
-                ])
+                pre_run_commands.extend(
+                    [
+                        f"pulumi config set --stack {stack_id} nodeInstanceTypes {instance_types_str}",
+                        f"pulumi config set --stack {stack_id} nodeDesiredSize {ng.desired_size}",
+                        f"pulumi config set --stack {stack_id} nodeMinSize {ng.min_size}",
+                        f"pulumi config set --stack {stack_id} nodeMaxSize {ng.max_size}",
+                        f"pulumi config set --stack {stack_id} nodeDiskSize {ng.disk_size}",
+                        f"pulumi config set --stack {stack_id} nodeCapacityType {ng.capacity_type}",
+                    ]
+                )
             else:
-                pre_run_commands.extend([
-                    f"pulumi config set --stack {stack_id} nodeInstanceTypes t3.medium",
-                    f"pulumi config set --stack {stack_id} nodeDesiredSize 2",
-                    f"pulumi config set --stack {stack_id} nodeMinSize 1",
-                    f"pulumi config set --stack {stack_id} nodeMaxSize 5",
-                    f"pulumi config set --stack {stack_id} nodeDiskSize 50",
-                    f"pulumi config set --stack {stack_id} nodeCapacityType ON_DEMAND",
-                ])
+                pre_run_commands.extend(
+                    [
+                        f"pulumi config set --stack {stack_id} nodeInstanceTypes t3.medium",
+                        f"pulumi config set --stack {stack_id} nodeDesiredSize 2",
+                        f"pulumi config set --stack {stack_id} nodeMinSize 1",
+                        f"pulumi config set --stack {stack_id} nodeMaxSize 5",
+                        f"pulumi config set --stack {stack_id} nodeDiskSize 50",
+                        f"pulumi config set --stack {stack_id} nodeCapacityType ON_DEMAND",
+                    ]
+                )
 
         source_context: dict[str, Any] = {
             "git": {
@@ -139,10 +146,7 @@ class PulumiDeploymentsClient:
         }
 
         if self.github_token:
-            source_context["git"]["gitAuth"] = {
-                "accessToken": {"secret": self.github_token}
-            }
-
+            source_context["git"]["gitAuth"] = {"accessToken": {"secret": self.github_token}}
 
         settings = {
             "sourceContext": source_context,
@@ -218,7 +222,6 @@ class PulumiDeploymentsClient:
             Deployment status
         """
         url = f"{PULUMI_API_BASE}/api/stacks/{self.organization}/{project_name}/{stack_name}/deployments/{deployment_id}"
-        
 
         async with httpx.AsyncClient() as client:
             response = await client.get(
@@ -253,7 +256,7 @@ class PulumiDeploymentsClient:
             )
             response.raise_for_status()
             data = response.json()
-    
+
             deployment = data.get("deployment", {})
             resources = deployment.get("resources", [])
 

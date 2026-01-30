@@ -1,5 +1,7 @@
 from functools import lru_cache
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -15,14 +17,16 @@ class Settings(BaseSettings):
     git_repo_url: str = ""
     git_repo_branch: str = "main"
     git_repo_dir: str = "."
-    github_token: str = "" 
+    github_token: str = ""
 
     aws_access_key_id: str = ""
     aws_secret_access_key: str = ""
     aws_region: str = "us-east-1"
 
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
 
 settings = get_settings()

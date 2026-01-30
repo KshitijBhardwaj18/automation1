@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+.eggs/
+*.egg-info/
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Pulumi
+Pulumi.*.yaml
+!Pulumi.yaml
+
+# Database
+*.db
+
+# Environment
+.env
+.env.*
+
+# Ruff cache
+.ruff_cache/
+
+# Config files contain sensitive data (external_id)
+# Uncomment if you want to track configs in git (not recommended)
+# config/
